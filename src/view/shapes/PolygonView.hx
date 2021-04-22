@@ -24,6 +24,7 @@ class PolygonView extends BaseShapeView {
         }
 
         graphics.lineTo(_coords[0][0], _coords[0][1]);
+
         graphics.endFill();
     }
 
@@ -48,6 +49,37 @@ class PolygonView extends BaseShapeView {
         }
 
         return result;
+    }
+
+    public override function hasPoint(x: Int, y: Int): Bool {
+        var len = _coords.length;
+        var j = len - 1;
+        var inside = false;
+        for (i in 0...len) {
+            if (i > 0) j = i - 1;
+            var xi = _coords[i][0], yi = _coords[i][1];
+            var xj = _coords[j][0], yj = _coords[j][1];
+            
+            var intersect = ((yi > y) != (yj > y))
+                && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+            if (intersect) inside = !inside;
+        }
+
+        return inside;
+    }
+
+    public override function moveCenterTo(x: Int, y: Int): Void {
+        var minMax = getMinMaxPoints();
+        var cx = minMax[0][0] + (minMax[1][0] - minMax[0][0]) / 2;
+        var cy = minMax[0][1] + (minMax[1][1] - minMax[0][1]) / 2;
+
+        var offsetX = Std.int(x - cx);
+        var offsetY = Std.int(y - cy);
+
+        for (i in 0..._coords.length) {
+            _coords[i][0] += offsetX;
+            _coords[i][1] += offsetY;
+        }
     }
 
     private function getCoords(sidesCount: Int): Array<Array<Int>> {
@@ -76,6 +108,20 @@ class PolygonView extends BaseShapeView {
 
     private function calcArea(): Int {
         var area = 0;
+        var minMax = getMinMaxPoints();
+
+        for(x in minMax[0][0]...(minMax[1][0] + 1)) {
+            for (y in minMax[0][1]...(minMax[1][1] + 1)) {
+                if (hasPoint(x, y)) {
+                    area++;
+                }
+            }
+        }
+
+        return area;
+    }
+
+    private function getMinMaxPoints(): Array<Array<Int>> {
         var maxX = _coords[0][0];
         var maxY = _coords[0][1];
         var minX = _coords[0][0];
@@ -88,32 +134,6 @@ class PolygonView extends BaseShapeView {
             minY = minY > _coords[i][1] ? _coords[i][1] : minY;
         }
 
-        for(x in minX...(maxX + 1)) {
-            for (y in minY...(maxY + 1)) {
-                if (pointInPolygon([x, y])) {
-                    area++;
-                }
-            }
-        }
-
-        return area;
-    }
-
-    private function pointInPolygon (point: Array<Int>): Bool {
-        var x = point[0], y = point[1];
-        var len = _coords.length;
-        var j = len - 1;
-        var inside = false;
-        for (i in 0...len) {
-            if (i > 0) j = i - 1;
-            var xi = _coords[i][0], yi = _coords[i][1];
-            var xj = _coords[j][0], yj = _coords[j][1];
-            
-            var intersect = ((yi > y) != (yj > y))
-                && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
-            if (intersect) inside = !inside;
-        }
-
-        return inside;
+        return [[minX, minY], [maxX, maxY]];
     }
 }

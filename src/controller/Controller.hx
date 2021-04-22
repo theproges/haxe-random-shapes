@@ -1,5 +1,7 @@
 package controller;
 
+import config.SystemEvents;
+import services.EventService;
 import view.shapes.BaseShapeView;
 import model.Model;
 import view.View;
@@ -17,6 +19,9 @@ class Controller {
         _view = view;
         _timer = 0;
         _isActive = false;
+
+        EventService.subscribe(SystemEvents.ShapeOutOfScreen, function(shapeIndex: Int) { onShapeOutOfScreen(shapeIndex); });
+        EventService.subscribe(SystemEvents.OnPointerDown, function(event) { onPointerDown(event); });
     }
 
     public function launch(): Void {
@@ -36,33 +41,44 @@ class Controller {
         _timer = _timer >= 1 ? 0 : _timer + dt;
     }
 
-    private function createRandomShape(): Void {
+    private function createRandomShape(?x: Int, ?y: Int): Void {
         var shapeTypes = 7;
         var probability = (Math.random() * 100) / (100 / shapeTypes);
         var shape: BaseShapeView;
         
         if (probability <= 1) {
-            shape = _view.createRandomTriangle();
+            shape = _view.createRandomTriangle(x, y);
         } else if (probability <= 2) {
-            shape = _view.createRandomQuadrangle();
+            shape = _view.createRandomQuadrangle(x, y);
         } else if(probability <= 3) {
-            shape = _view.createRandomPentagon();
+            shape = _view.createRandomPentagon(x, y);
         } else if (probability <= 4) {
-            shape = _view.createRandomHexagon();
+            shape = _view.createRandomHexagon(x, y);
         } else if (probability <= 5) {
-            shape = _view.createRandomCircle();
+            shape = _view.createRandomCircle(x, y);
         } else if (probability <= 6) {
-            shape = _view.createRandomEllipse();
+            shape = _view.createRandomEllipse(x, y);
         } else {
-            shape = _view.createRandomStar();
+            shape = _view.createRandomStar(x, y);
         }
 
         _model.addArea(shape.getAreaValue());
         _view.refresh();
     }
 
-    private function onRemoveShape(shape: BaseShapeView): Void {
-        _model.removeArea(shape.getAreaValue());
+    private function onShapeOutOfScreen(shapeIndex: Int): Void {
+        var area = _view.getShapeByIndex(shapeIndex).getAreaValue();
+        _model.removeArea(area);
+        _view.destroyShape(shapeIndex);
         _view.refresh();
+    }
+
+    private function onPointerDown(event: Dynamic): Void {
+        var x = event.offsetX;
+        var y = event.offsetY;
+        
+        if (!_view.removeShapeAt(x, y)) {
+            createRandomShape(x, y);
+        }
     }
 }

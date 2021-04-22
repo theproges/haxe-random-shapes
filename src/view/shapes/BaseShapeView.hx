@@ -7,6 +7,8 @@ class BaseShapeView extends Shape {
     public function lower(offsetY:Int): Void { }
     public function draw(): Void { }
     public function isLower(y: Int): Bool { return false; }
+    public function hasPoint(x: Int, y: Int): Bool { return false; }
+    public function moveCenterTo(x: Int, y: Int): Void {}
     public function dispose(): Void { 
         
     }

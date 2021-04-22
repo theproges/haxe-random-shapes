@@ -1,6 +1,7 @@
 package view.shapes;
 
 // todo: performance optimization
+// todo: start is not removing from stage. Why?
 class StarView extends BaseShapeView {
     private var _centerPoint: Array<Int>;
     private var _coords: Array<Array<Int>>;
@@ -21,8 +22,6 @@ class StarView extends BaseShapeView {
         _color = getRandomColor();
         _coords = getCoords();
         _area = calcArea();
-
-        trace(_area);
     }
 
     public override function draw(): Void {
@@ -49,6 +48,20 @@ class StarView extends BaseShapeView {
 
     public override function isLower(y: Int): Bool {
         return (_centerPoint[1] + _outerRadius) > y;
+    }
+
+    public override function moveCenterTo(x: Int, y: Int): Void {
+        var minMax = getMinMaxPoints();
+        var cx = minMax[0][0] + (minMax[1][0] - minMax[0][0]) / 2;
+        var cy = minMax[0][1] + (minMax[1][1] - minMax[0][1]) / 2;
+
+        var offsetX = Std.int(x - cx);
+        var offsetY = Std.int(y - cy);
+
+        for (i in 0..._coords.length) {
+            _coords[i][0] += offsetX;
+            _coords[i][1] += offsetY;
+        }
     }
 
     private function getCoords(): Array<Array<Int>> {
@@ -79,21 +92,11 @@ class StarView extends BaseShapeView {
 
     private function calcArea(): Int {
         var area = 0;
-        var maxX = _coords[0][0];
-        var maxY = _coords[0][1];
-        var minX = _coords[0][0];
-        var minY = _coords[0][1];
+        var minMax = getMinMaxPoints();
 
-        for(i in 1..._coords.length) {
-            maxX = maxX < _coords[i][0] ? _coords[i][0] : maxX;
-            maxY = maxY < _coords[i][1] ? _coords[i][1] : maxY;
-            minX = minX > _coords[i][0] ? _coords[i][0] : minX;
-            minY = minY > _coords[i][1] ? _coords[i][1] : minY;
-        }
-
-        for(x in minX...(maxX + 1)) {
-            for (y in minY...(maxY + 1)) {
-                if (pointInPolygon([x, y])) {
+        for(x in minMax[0][0]...(minMax[1][0] + 1)) {
+            for (y in minMax[0][1]...(minMax[1][1] + 1)) {
+                if (hasPoint(x, y)) {
                     area++;
                 }
             }
@@ -102,8 +105,7 @@ class StarView extends BaseShapeView {
         return area;
     }
 
-    private function pointInPolygon (point: Array<Int>): Bool {
-        var x = point[0], y = point[1];
+    public override function hasPoint(x: Int, y: Int): Bool {
         var len = _coords.length;
         var j = len - 1;
         var inside = false;
@@ -126,5 +128,21 @@ class StarView extends BaseShapeView {
             getRandomInt(_maxWidth / 2, 800 - _maxWidth),
             -_maxWidth
         ];
+    }
+
+    private function getMinMaxPoints(): Array<Array<Int>> {
+        var maxX = _coords[0][0];
+        var maxY = _coords[0][1];
+        var minX = _coords[0][0];
+        var minY = _coords[0][1];
+
+        for(i in 1..._coords.length) {
+            maxX = maxX < _coords[i][0] ? _coords[i][0] : maxX;
+            maxY = maxY < _coords[i][1] ? _coords[i][1] : maxY;
+            minX = minX > _coords[i][0] ? _coords[i][0] : minX;
+            minY = minY > _coords[i][1] ? _coords[i][1] : minY;
+        }
+
+        return [[minX, minY], [maxX, maxY]];
     }
 }

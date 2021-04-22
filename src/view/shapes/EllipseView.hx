@@ -1,7 +1,7 @@
 package view.shapes;
 
 class EllipseView extends BaseShapeView {
-    private var _centerPoint: Array<Int>;
+    private var _leftTopPoint: Array<Int>;
     private var _maxWidth: Int;
     private var _color: Int;
     private var _area: Int;
@@ -17,20 +17,18 @@ class EllipseView extends BaseShapeView {
             _width = getRandomInt(maxWidth / 2, maxWidth);
             _height = getRandomInt(maxWidth / 2, maxWidth);
         }
-
         _maxWidth = maxWidth;
-        _centerPoint = getCenterPoint();
+        _leftTopPoint = getCenterPoint();
         _color = getRandomColor();
         _area = calcArea();
         _equalSize = equalSize;
-        trace(_width, _height);
     }
 
     public override function draw(): Void {
         graphics.clear();
         graphics.beginFill(_color);
-        graphics.moveTo(_centerPoint[0], _centerPoint[1]);
-        graphics.drawEllipse(_centerPoint[0], _centerPoint[1], _width, _height);
+        graphics.moveTo(_leftTopPoint[0], _leftTopPoint[1]);
+        graphics.drawEllipse(_leftTopPoint[0], _leftTopPoint[1], _width, _height);
         graphics.endFill();
     }
 
@@ -39,12 +37,29 @@ class EllipseView extends BaseShapeView {
     }
 
     public override function lower(offsetY:Int): Void {
-        _centerPoint[1] += offsetY;
+        _leftTopPoint[1] += offsetY;
         draw();
     }
 
     public override function isLower(y: Int): Bool {
-        return (_centerPoint[1] - height) > y;
+        return (_leftTopPoint[1] - height) > y;
+    }
+
+    public override function hasPoint(x: Int, y: Int): Bool {
+        var halfAxisX = Std.int(_width / 2);
+        var halfAxixY = Std.int(_height / 2);
+        var cx = _leftTopPoint[0] + halfAxisX;
+        var cy = _leftTopPoint[1] + halfAxixY;
+        
+        x -= cx;
+        y -= cy;
+
+        return Math.pow(x, 2) / Math.pow(halfAxisX, 2) + Math.pow(y, 2) / Math.pow(halfAxixY, 2) <= 1;
+    }
+
+    public override function moveCenterTo(x: Int, y: Int): Void {
+        _leftTopPoint[0] = x - Std.int(_width / 2);
+        _leftTopPoint[1] = y - Std.int(_height / 2);
     }
 
     private function calcArea(): Int {
@@ -57,11 +72,5 @@ class EllipseView extends BaseShapeView {
             getRandomInt(_maxWidth / 2, 800 - _maxWidth),
             -_maxWidth
         ];
-    }
-
-    private function pointInPolygon (point: Array<Int>): Bool {
-        var result = Math.pow(point[0] - _centerPoint[0], 2) / Math.pow(width, 2) + Math.pow(point[1] - _centerPoint[1], 2) / Math.pow(height, 2);
-
-        return result <= 1;
     }
 }
