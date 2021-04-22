@@ -22,6 +22,10 @@ class Controller {
 
         EventService.subscribe(SystemEvents.ShapeOutOfScreen, function(shapeIndex: Int) { onShapeOutOfScreen(shapeIndex); });
         EventService.subscribe(SystemEvents.OnPointerDown, function(event) { onPointerDown(event); });
+        EventService.subscribe(SystemEvents.OnGravityIncrease, function(event) { onGravityIncrease(); });
+        EventService.subscribe(SystemEvents.OnGravityDecrease, function(event) { onGravityDecrease(); });
+        EventService.subscribe(SystemEvents.OnShapesPerSecIncrease, function(event) { onShapesPerSecIncrease(); });
+        EventService.subscribe(SystemEvents.OnShapesPerSecDecrease, function(event) { onShapesPerSecDecrease(); });
     }
 
     public function launch(): Void {
@@ -80,5 +84,27 @@ class Controller {
         if (!_view.removeShapeAt(x, y)) {
             createRandomShape(x, y);
         }
+
+        _view.refresh();
+    }
+
+    private function onGravityIncrease(): Void {
+        _model.increaseGravity();
+        _view.refresh();
+    }
+
+    private function onGravityDecrease(): Void {
+        _model.decreaseGravity();
+        _view.refresh();
+    }
+
+    private function onShapesPerSecIncrease(): Void {
+        _model.increaseShapesPerSec();
+        _view.refresh();
+    }
+
+    private function onShapesPerSecDecrease(): Void {
+        _model.decreaseShapesPerSec();
+        _view.refresh();
     }
 }

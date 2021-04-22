@@ -9,7 +9,31 @@
 	</style>
 </head>
 <body>
-	<div id="content"></div>
+	<div id="app">
+		<div id="top-bar">
+			<span id="shapes-count">Count: 999</span>
+			<span id="area">Area: 777px^2 </span>
+		</div>
+		<div id="content"></div>
+		<div id="gravity-control" class="control">
+			<div id="gravity-indicator" class="indicator">
+				<span id="gravity-value">Gravity: 5</span>
+			</div>
+			<div class="button-wrap">
+				<div id="decrease-gravity-btn" class="button">-</div>
+				<div id="increase-gravity-btn" class="button">+</div>
+			</div>
+		</div>
+		<div id="shapes-control" class="control">
+			<div id="shapes-indicator" class="indicator">
+				<span id="shapes-gen-value">Shapes per sec: 1</span>
+			</div>
+			<div class="button-wrap">
+				<div id="decrease-shapes-btn" class="button">-</div>
+				<div id="increase-shapes-btn" class="button">+</div>
+			</div>
+		</div>
+	</div>
 	<script src="app.js"></script>
 </body>
 </html>

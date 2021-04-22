@@ -10,6 +10,8 @@ import view.shapes.StarView;
 
 import openfl.display.Stage in OpenFLStage;
 
+import js.Browser.document;
+
 class View {
     private var _stage: OpenFLStage;
     private var _model: Model;
@@ -19,6 +21,11 @@ class View {
     private var _shapesList: Array<BaseShapeView>;
     private var _stepY: Int;
     private var _shapeMaxWidth: Int;
+
+    private var _shapesCountEl: js.html.Element;
+    private var _areaEl: js.html.Element;
+    private var _gravityEl: js.html.Element;
+    private var _shapesPerSecEl: js.html.Element;
     
     public function new(stage: OpenFLStage, model: Model) {
         _stage = stage;
@@ -26,9 +33,27 @@ class View {
         _shapesList = new Array<BaseShapeView>();
         _stepY = 100;
         _shapeMaxWidth = 300;
+        _gravity = _model.getGravity();
 
-        js.Browser.document.getElementsByTagName("canvas")[0].addEventListener("pointerdown", function(event) {
+        _shapesCountEl = document.getElementById("shapes-count");
+        _areaEl = document.getElementById("area");
+        _gravityEl = document.getElementById("gravity-value");
+        _shapesPerSecEl = document.getElementById("shapes-gen-value");
+
+        document.getElementsByTagName("canvas")[0].addEventListener("pointerdown", function(event) {
             EventService.notify(SystemEvents.OnPointerDown, event);
+        });
+        document.getElementById("increase-gravity-btn").addEventListener("pointerdown", function() {
+            EventService.notify(SystemEvents.OnGravityIncrease, null);
+        });
+        document.getElementById("decrease-gravity-btn").addEventListener("pointerdown", function() {
+            EventService.notify(SystemEvents.OnGravityDecrease, null);
+        });
+        document.getElementById("increase-shapes-btn").addEventListener("pointerdown", function() {
+            EventService.notify(SystemEvents.OnShapesPerSecIncrease, null);
+        });
+        document.getElementById("decrease-shapes-btn").addEventListener("pointerdown", function() {
+            EventService.notify(SystemEvents.OnShapesPerSecDecrease, null);
         });
     }
 
@@ -40,7 +65,7 @@ class View {
         var index = 0;
         while(index < _shapesList.length) {
             var shape = _shapesList[index];
-            shape.lower(Std.int(_stepY * dt * _model.getGravity()));
+            shape.lower(Std.int(_stepY * dt * _gravity));
             if (checkShape(shape)) {
                 index++;
             }
@@ -68,8 +93,11 @@ class View {
     }
 
     public function refresh(): Void {
-        // todo: refresh UI
-        // todo: refresh gravity
+        _shapesCountEl.innerHTML = "Count: " + _shapesList.length;
+        _areaEl.innerHTML = "Area: " + _model.getArea();
+        _gravityEl.innerHTML = "Gravity: " + _model.getGravity();
+        _shapesPerSecEl.innerHTML = "Shapes per sec: " + _model.getShapesPerSec();
+        _gravity = _model.getGravity();
     }
 
     public function createRandomTriangle(?x: Int, ?y: Int): BaseShapeView {
