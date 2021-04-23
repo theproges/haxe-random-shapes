@@ -1,5 +1,6 @@
 package view.shapes;
 
+import openfl.display.Shape;
 import config.GameSettings;
 
 class EllipseView extends BaseShapeView {
@@ -11,8 +12,8 @@ class EllipseView extends BaseShapeView {
     private var _height: Int;
     private var _equalSize: Bool;
 
-    public function new(maxWidth: Int, equalSize: Bool = false) {
-        super();
+    public function new(canvas: Shape, maxWidth: Int, equalSize: Bool = false) {
+        super(canvas);
         if (equalSize) {
             _width = _height = getRandomInt(maxWidth / 2, maxWidth);
         } else {
@@ -27,11 +28,10 @@ class EllipseView extends BaseShapeView {
     }
 
     public override function draw(): Void {
-        graphics.clear();
-        graphics.beginFill(_color);
-        graphics.moveTo(_leftTopPoint[0], _leftTopPoint[1]);
-        graphics.drawEllipse(_leftTopPoint[0], _leftTopPoint[1], _width, _height);
-        graphics.endFill();
+        _canvas.graphics.beginFill(_color);
+        _canvas.graphics.moveTo(_leftTopPoint[0], _leftTopPoint[1]);
+        _canvas.graphics.drawEllipse(_leftTopPoint[0], _leftTopPoint[1], _width, _height);
+        _canvas.graphics.endFill();
     }
 
     public override function getAreaValue(): Int {
@@ -44,7 +44,7 @@ class EllipseView extends BaseShapeView {
     }
 
     public override function isLower(y: Int): Bool {
-        return (_leftTopPoint[1] - height) > y;
+        return (_leftTopPoint[1] - _height) > y;
     }
 
     public override function hasPoint(x: Int, y: Int): Bool {

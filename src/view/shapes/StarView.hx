@@ -1,5 +1,6 @@
 package view.shapes;
 
+import openfl.display.Shape;
 import config.GameSettings;
 
 class StarView extends BaseShapeView {
@@ -12,8 +13,8 @@ class StarView extends BaseShapeView {
     private var _area: Int;
     private var _maxWidth: Int;
 
-    public function new(maxWidth: Int) {
-        super();
+    public function new(canvas: Shape, maxWidth: Int) {
+        super(canvas);
         _maxWidth = maxWidth;
         _centerPoint = getCenterPoint();
         _spikes = getRandomInt(5, 9);
@@ -25,14 +26,13 @@ class StarView extends BaseShapeView {
     }
 
     public override function draw(): Void {
-        graphics.clear();
-        graphics.beginFill(_color);
-        graphics.moveTo(_coords[0][0], _coords[0][1]);
+        _canvas.graphics.beginFill(_color);
+        _canvas.graphics.moveTo(_coords[0][0], _coords[0][1]);
         for (i in 1..._coords.length) {
-            graphics.lineTo(_coords[i][0], _coords[i][1]);
+            _canvas.graphics.lineTo(_coords[i][0], _coords[i][1]);
         }
-        graphics.lineTo(_coords[0][0], _coords[0][1]);
-        graphics.endFill();
+        _canvas.graphics.lineTo(_coords[0][0], _coords[0][1]);
+        _canvas.graphics.endFill();
     }
 
     public override function getAreaValue(): Int {

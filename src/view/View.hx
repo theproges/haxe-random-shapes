@@ -1,5 +1,6 @@
 package view;
 
+import openfl.display.Shape;
 import config.GameSettings;
 import config.SystemEvents;
 import services.EventService;
@@ -27,6 +28,8 @@ class View {
     private var _areaEl: js.html.Element;
     private var _gravityEl: js.html.Element;
     private var _shapesPerSecEl: js.html.Element;
+
+    private var _canvas: Shape;
     
     public function new(stage: OpenFLStage, model: Model) {
         _stage = stage;
@@ -35,6 +38,9 @@ class View {
         _stepY = GameSettings.SHAPE_STEP_Y;
         _shapeMaxWidth = GameSettings.SHAPE_MAX_WIDTH;
         _gravity = _model.getGravity();
+
+        _canvas = new Shape();
+        _stage.addChild(_canvas);
 
         _shapesCountEl = document.getElementById("shapes-count");
         _areaEl = document.getElementById("area");
@@ -63,6 +69,8 @@ class View {
             return;
         }
 
+        _canvas.graphics.clear();
+
         var index = 0;
         while(index < _shapesList.length) {
             var shape = _shapesList[index];
@@ -88,7 +96,6 @@ class View {
 
     public function destroyShape(index: Int): Void{
         _shapesList.splice(index, 1);
-        _stage.removeChildAt(index + 1);
     }
 
     public function refresh(): Void {
@@ -100,49 +107,49 @@ class View {
     }
 
     public function createRandomTriangle(?x: Int, ?y: Int): BaseShapeView {
-        var shape = new PolygonView(3, _shapeMaxWidth);
+        var shape = new PolygonView(_canvas, 3, _shapeMaxWidth);
         installShape(shape, x, y);
 
         return shape;
     }
 
     public function createRandomQuadrangle(?x: Int, ?y: Int): BaseShapeView {
-        var shape = new PolygonView(4, _shapeMaxWidth);
+        var shape = new PolygonView(_canvas, 4, _shapeMaxWidth);
         installShape(shape, x, y);
 
         return shape;
     }
 
     public function createRandomPentagon(?x: Int, ?y: Int): BaseShapeView { 
-        var shape = new PolygonView(5, _shapeMaxWidth);
+        var shape = new PolygonView(_canvas, 5, _shapeMaxWidth);
         installShape(shape, x, y);
 
         return shape;
     }
 
     public function createRandomHexagon(?x: Int, ?y: Int): BaseShapeView {
-        var shape = new PolygonView(6, _shapeMaxWidth);
+        var shape = new PolygonView(_canvas, 6, _shapeMaxWidth);
         installShape(shape, x, y);
 
         return shape;
     }
 
     public function createRandomCircle(?x: Int, ?y: Int): BaseShapeView { 
-        var shape = new EllipseView(_shapeMaxWidth, true);
+        var shape = new EllipseView(_canvas, _shapeMaxWidth, true);
         installShape(shape, x, y);
 
         return shape; 
     }
 
     public function createRandomEllipse(?x: Int, ?y: Int): BaseShapeView { 
-        var shape = new EllipseView(_shapeMaxWidth);
+        var shape = new EllipseView(_canvas, _shapeMaxWidth);
         installShape(shape, x, y);
 
         return shape; 
     }
 
     public function createRandomStar(?x: Int, ?y: Int): BaseShapeView { 
-        var shape = new StarView(_shapeMaxWidth);
+        var shape = new StarView(_canvas, _shapeMaxWidth);
         installShape(shape, x, y);
 
         return shape;
@@ -163,7 +170,6 @@ class View {
 
      private function installShape(shape: BaseShapeView, x: Int, y: Int): Void {
         _shapesList.push(shape);
-        _stage.addChild(shape);
 
         if (x != null && y != null) {
             shape.moveCenterTo(x, y);
