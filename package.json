@@ -6,7 +6,6 @@
     "haxe": "4.2.1"
   },
   "devDependencies": {
-    "copy-webpack-plugin": "^4.3.1",
     "haxe": "^5.0.10",
     "haxe-loader": "^0.5.0",
     "openfl": "^8.1.1",
