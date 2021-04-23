@@ -1,15 +1,17 @@
 package model;
 
+import config.GameSettings;
+
 class Model {
     private var _area: Int;
 
     private var _gravity: Int;
-    private var _gravityDefault: Int = 5;
-    private var _gravityMinMax: Array<Int> = [1, 10];
+    private var _gravityDefault: Int = GameSettings.GRAVITY_DEFAULT;
+    private var _gravityMinMax: Array<Int> = GameSettings.GRAVITY_INTERVAL;
 
     private var _shapesPerSec: Int;
-    private var _shapesPerSecDefault: Int = 1;
-    private var _shapesPerSecMinMax: Array<Int> = [1, 10];
+    private var _shapesPerSecDefault: Int = GameSettings.SHAPES_PER_SEC_DEFAULT;
+    private var _shapesPerSecMinMax: Array<Int> = GameSettings.SHAPES_PER_SEC_INTERVAL;
  
     public function new() {
         _area = 0;

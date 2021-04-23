@@ -1,5 +1,7 @@
 package view.shapes;
 
+import config.GameSettings;
+
 class PolygonView extends BaseShapeView {
     private var _coords: Array<Array<Int>>;
     private var _color: Int;
@@ -87,10 +89,8 @@ class PolygonView extends BaseShapeView {
         var maxAngle = sumAngle / sidesCount / 2;
         var angleStep = getRandomInt(maxAngle / 2, maxAngle);
         var leftAngle = sumAngle;
-        // todo: _stage.width = 0. Why?
-        // todo: remove 800
         var points = [
-            [getRandomInt(_shapeMaxWidth, 800 - _shapeMaxWidth), -_shapeMaxWidth]
+            [getRandomInt(_shapeMaxWidth, GameSettings.SCENE_WIDTH - _shapeMaxWidth), -_shapeMaxWidth]
         ];
 
         for (i in 0...sidesCount - 1) {

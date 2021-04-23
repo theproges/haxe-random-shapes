@@ -1,5 +1,7 @@
 package;
 
+import config.GameSettings;
+
 import model.Model;
 import view.View;
 import controller.Controller;
@@ -15,7 +17,7 @@ class Main {
 	private static var _prevTime: Float;
 
 	static function main() {
-		var stage = new OpenFLStage(800, 800, 0xffffff);
+		var stage = new OpenFLStage(GameSettings.SCENE_WIDTH, GameSettings.SCENE_HEIGHT, 0xffffff);
         var content = js.Browser.document.getElementById("content");
         content.appendChild(stage.element);
 

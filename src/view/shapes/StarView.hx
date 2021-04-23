@@ -1,7 +1,7 @@
 package view.shapes;
 
-// todo: performance optimization
-// todo: start is not removing from stage. Why?
+import config.GameSettings;
+
 class StarView extends BaseShapeView {
     private var _centerPoint: Array<Int>;
     private var _coords: Array<Array<Int>>;
@@ -47,7 +47,15 @@ class StarView extends BaseShapeView {
     }
 
     public override function isLower(y: Int): Bool {
-        return (_centerPoint[1] + _outerRadius) > y;
+        var result = true;
+
+        for (i in 0..._coords.length) {
+            if(_coords[i][1] <= y) {
+                result = false;
+            }
+        }
+
+        return result;
     }
 
     public override function moveCenterTo(x: Int, y: Int): Void {
@@ -124,8 +132,7 @@ class StarView extends BaseShapeView {
 
     private function getCenterPoint(): Array<Int> {
         return [
-            // todo: remove 800
-            getRandomInt(_maxWidth / 2, 800 - _maxWidth),
+            getRandomInt(_maxWidth / 2, GameSettings.SCENE_WIDTH - _maxWidth),
             -_maxWidth
         ];
     }

@@ -80,8 +80,11 @@ class Controller {
     private function onPointerDown(event: Dynamic): Void {
         var x = event.offsetX;
         var y = event.offsetY;
-        
-        if (!_view.removeShapeAt(x, y)) {
+        var shapeIndex = _view.getShapeIndexByCoords(x, y);
+
+        if (shapeIndex != null) {
+            onShapeOutOfScreen(shapeIndex);
+        } else {
             createRandomShape(x, y);
         }
 

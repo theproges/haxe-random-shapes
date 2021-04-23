@@ -9,9 +9,6 @@ class BaseShapeView extends Shape {
     public function isLower(y: Int): Bool { return false; }
     public function hasPoint(x: Int, y: Int): Bool { return false; }
     public function moveCenterTo(x: Int, y: Int): Void {}
-    public function dispose(): Void { 
-        
-    }
     public function getRandomColor(): Int {
         return getRandomInt(0, 16777215);
     }

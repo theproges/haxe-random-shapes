@@ -1,5 +1,7 @@
 package view.shapes;
 
+import config.GameSettings;
+
 class EllipseView extends BaseShapeView {
     private var _leftTopPoint: Array<Int>;
     private var _maxWidth: Int;
@@ -68,8 +70,7 @@ class EllipseView extends BaseShapeView {
 
     private function getCenterPoint(): Array<Int> {
         return [
-            // todo: remove 800
-            getRandomInt(_maxWidth / 2, 800 - _maxWidth),
+            getRandomInt(_maxWidth / 2, GameSettings.SCENE_WIDTH - _maxWidth),
             -_maxWidth
         ];
     }
