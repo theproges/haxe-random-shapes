@@ -92,10 +92,10 @@ class View {
     }
 
     public function refresh(): Void {
-        _shapesCountEl.innerHTML = "Count: " + _shapesList.length;
-        _areaEl.innerHTML = "Area: " + _model.getArea();
-        _gravityEl.innerHTML = "Gravity: " + _model.getGravity();
-        _shapesPerSecEl.innerHTML = "Shapes per sec: " + _model.getShapesPerSec();
+        _shapesCountEl.innerHTML = "COUNT: " + _shapesList.length;
+        _areaEl.innerHTML = "AREA: " + _model.getArea();
+        _gravityEl.innerHTML = "GRAVITY: " + _model.getGravity();
+        _shapesPerSecEl.innerHTML = "SHAPES PER SECOND: " + _model.getShapesPerSec();
         _gravity = _model.getGravity();
     }
 
